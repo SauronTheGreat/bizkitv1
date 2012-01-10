@@ -1,0 +1,15 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @simulation.name %>
+</p>
+
+<p>
+  <b>Max rounds:</b>
+  <%= @simulation.max_rounds %>
+</p>
+
+
+<%= link_to 'Edit', edit_simulation_path(@simulation) %> |
+<%= link_to 'Back', simulations_path %>

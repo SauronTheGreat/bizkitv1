@@ -1,0 +1,131 @@
+<script type="text/javascript">
+    $(function() {
+    })
+</script>
+<%= content_for :page_header do %>
+    <div style="border: none;margin-top: 15px;"><%= image_tag('logo_white.png') %></div>
+<% end %>
+
+<div class="row">
+  <div class="span10">
+    <div class="row">
+      <div class="span5" style="font-size:14px;">
+        <div class="span4">
+          <p>
+          <h3>Welcome to Finesse</h3>
+          </p>
+          A finance strategy simulation conceived and adapted to the Indian markets, conditions and context. The
+          simulation helps understand the tradeoffs between quantifiable risks and returns, using a systematic
+          methodology
+          that adjusts for a variety of finance and business variants. A range of outcomes are arrived that are then
+          used
+          to make the business decisions.
+        </div>
+      </div>
+
+      <div class="span5">
+        <div style="text-align: left;border-radius: 10px"><%= image_tag("abacus.jpg", :size => "250x295", :style=>"border-radius:10px") %></div>
+        <br/>
+        <% if !current_user %>
+            <div style="text-align: right;color: #556b2f;font-size: 20px;font-weight: bold;margin-right: 30px;">
+              <a href="#" data-controls-modal="sign_up_form" data-backdrop="static" class="btn primary ">Sign Up</a>
+            </div>
+        <% else %>
+            <div style="text-align: right;color: #556b2f;font-size: 20px;font-weight: bold;margin-right: 20px;">
+              <h2> Welcome</h2>
+            </div>
+        <% end %>
+        <div id="sign_up_form" class="modal hide fade">
+          <div class="modal-header">
+            <a href="#" class="close"> &times; </a>
+
+            <h3>Sign Up</h3>
+          </div>
+          <%= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| %>
+              <div class="modal-body">
+                <div class="clearfix">
+                  <%= f.label :first_name %>
+                  <div class="input">  <%= f.text_field :first_name %></div>
+                  <br/>
+                  <%= f.label :last_name %>
+                  <div class="input">  <%= f.text_field :last_name %></div>
+                  <br/>
+                  <%= f.label :username %>
+                  <div class="input">  <%= f.text_field :username %></div>
+                  <br/>
+                  <%= f.label :email %>
+                  <div class="input">  <%= f.email_field :email %></div>
+                  <br/>
+                  <%= f.label :password %>
+                  <div class="input">  <%= f.password_field :password %></div>
+                  <br/>
+                  <%= f.label :password_confirmation %>
+                  <div class="input"><br/> <%= f.password_field :password_confirmation %></div>
+                  <br/>
+                  <%= f.label :admin %>
+                  <div class="input input-prepended"> <%= f.check_box :admin %></div>
+                  <br/>
+                  <%= f.label :superadmin %>
+                  <div class="input input-prepended"> <%= f.check_box :superadmin %></div>
+                  <br/>
+                  <%= f.label :facilitator %>
+                  <div class="input input-prepended"> <%= f.check_box :facilitator %></div>
+                  <br/>
+                  <%= f.label :student %>
+                  <div class="input input-prepended"> <%= f.check_box :student %></div>
+                  <br/>
+
+                </div>
+              </div>
+              <div class="modal-footer">
+                <div>
+                  <%= f.submit "Sign up", :class=>"btn primary" %>
+                </div>
+              </div>
+          <% end %>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="span6">
+    <table style="background-color: #ffffff;color: #000000;">
+      <tr style="border: none;">
+        <td style="border: none;">
+          <%= image_tag("cfo.png", :size => "64x64") %>
+        </td>
+        <td style="border: none;">
+          Play the role of a CFO with the power to determine the future of your company. But as they say, with great power comes great responsibility...
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <%= image_tag("decision.png", :size => "64x64") %>
+        </td>
+        <td>
+          Appreciate the nuances of corporate finance as you approve budgets, decide capital expansion plans and control everything from salary to commissions.
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <%= image_tag("investment.png", :size => "64x64") %>
+        </td>
+        <td>
+          Understand the fundamentals of treasury management as you juggle debt, equity and investments in a bid to make money through
+          financial operations
+        </td>
+      </tr>
+      <tr>
+        <td>
+          <%= image_tag("balance.png", :size => "64x64") %>
+        </td>
+        <td>
+          Experience the exquisite balance required to manage the need for short term focus in financial decision making with a long term vision for the company
+        </td>
+      </tr>
+    </table>
+  </div>
+
+</div>
+
+<!-- /container -->
+

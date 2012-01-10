@@ -1,0 +1,131 @@
+<%= content_for :page_header do %>
+
+    <h1>Start Up Decisions</h1>
+    <h5>Cost Price:</h5><p class="cost_price">0</p>
+
+<% end %>
+
+
+<div id="wrapper">
+  <div id="steps">
+    <%= form_for(@start_up_decision) do |f| %>
+        <%= f.hidden_field :player_id, :value=>@player_id %>
+
+        <%= f.hidden_field :simulation_id, :value=>@simulation_id %>
+
+        <% if @start_up_decision.errors.any? %>
+            <div id="error_explanation">
+              <h2><%= pluralize(@start_up_decision.errors.count, "error") %> prohibited this start_up_decision from
+                being saved:</h2>
+
+              <ul>
+                <% @start_up_decision.errors.full_messages.each do |msg| %>
+                    <li><%= msg %></li>
+                <% end %>
+              </ul>
+            </div>
+        <% end %>
+
+        <fieldset class="step">
+          <legend>Taste</legend>
+
+          <div class="clearfix">
+
+            <%= f.label :taste_id %>
+            <div class="input">
+              <%= f.select :taste_id, Taste.all.collect { |taste| [taste.name, taste.id] } %>
+            </div>
+          </div>
+
+
+        </fieldset>
+
+        <fieldset class="step">
+          <legend>Type</legend>
+
+          <div class="clearfix">
+
+            <%= f.label :type_id %>
+            <div class="input">
+              <%= f.select :type_id, Type.all.collect { |type| [type.name, type.id] } %>
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="step">
+          <legend>Topping</legend>
+          <div class="clearfix">
+
+            <%= f.label :topping_id %>
+            <div class="input">
+              <%= f.select :topping_id, Topping.all.collect { |topping| [topping.name, topping.id] } %>
+            </div>
+          </div>
+        </fieldset>
+
+
+        <fieldset class="step">
+          <legend>Packaging</legend>
+          <div class="clearfix">
+
+            <%= f.label :packaging_id %>
+            <div class="input">
+              <%= f.select :packaging_id, Packaging.all.collect { |packaging| [packaging.name, packaging.id] }, :class=>"medium" %>
+
+            </div>
+          </div>
+        </fieldset>
+
+        <fieldset class="step">
+          <legend>Brand Name</legend>
+          <div class="clearfix">
+
+            <%= f.label :brand_name %>
+            <div class="input">
+              <%= f.text_field :brand_name, %>
+
+            </div>
+          </div>
+        </fieldset>
+
+
+        <fieldset class="step">
+
+          <legend>Submit</legend>
+          <div class="actions">
+            <%= f.submit "Confirm", :class=>"btn " %>
+          </div>
+        </fieldset>
+    <% end %>
+
+
+  </div>
+
+  <div id="navigation" style="display:none;">
+    <ul>
+      <li class="selected">
+        <a href="#">Taste</a>
+      </li>
+      <li>
+        <a href="#">Type</a>
+      </li>
+      <li>
+        <a href="#">Topping</a>
+      </li>
+      <li>
+        <a href="#">Packaging</a>
+      </li>
+      <li>
+        <a href="#">Brand </a>
+      </li>
+
+      <li>
+        <a href="#">Submit</a>
+      </li>
+    </ul>
+  </div>
+
+</div>
+
+
+

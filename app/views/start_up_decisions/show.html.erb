@@ -1,0 +1,40 @@
+<%= content_for :page_header do %>
+    <h2>Showing start up decisions for player <%= @start_up_decision.player_id %></h2>
+<% end %>
+
+<p id="notice"><%= notice %></p>
+
+
+<p>
+  <b>Taste:</b>
+  <%= Taste.find(@start_up_decision.taste_id).name %>
+</p>
+
+<p>
+  <b>Type:</b>
+  <%= Type.find(@start_up_decision.type_id).name %>
+</p>
+
+<p>
+  <b>Topping:</b>
+  <%= Topping.find(@start_up_decision.topping_id).name %>
+</p>
+
+<p>
+  <b>Packaging:</b>
+  <%= Packaging.find(@start_up_decision.packaging_id).name %>
+</p>
+<p>
+  <b>Name:</b>
+  <%= @start_up_decision.brand_name %>
+</p>
+
+
+
+<%= link_to 'Edit', edit_start_up_decision_path(@start_up_decision) %> |
+<%= link_to 'Back', start_up_decisions_path %>
+
+<%= content_for :secondary_area do%>
+    <%= link_to "Proceed for Round Data >>",new_round_decision_path,:class => "primary btn" %>
+
+<% end %>

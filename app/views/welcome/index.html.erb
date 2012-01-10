@@ -1,0 +1,22 @@
+This is the root page
+<br>
+<% if user_signed_in? %>
+    <% if current_user.facilitator? %>
+
+        <%= link_to "create new student group", new_student_group_path %><br>
+        <%= link_to "create new institute student (import)", new_import_path %> <br>
+        <%= link_to "create new simulation", new_simulation_path %>
+
+
+    <% end %>
+
+    <% if current_user.admin? %>
+        <!--this is to create a new institute-->
+        <%= link_to "create new institute", new_institute_path %><br>
+        <%= link_to "create new facilitator", new_facilitator_path %>
+
+
+
+    <% end %>
+
+<% end %>

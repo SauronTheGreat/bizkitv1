@@ -1,0 +1,33 @@
+<h1>Listing start_up_decisions</h1>
+
+<table>
+  <tr>
+    <th>Player</th>
+    <th>Simulation</th>
+    <th>Taste</th>
+    <th>Type</th>
+    <th>Topping</th>
+    <th>Packaging</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @start_up_decisions.each do |start_up_decision| %>
+  <tr>
+    <td><%= start_up_decision.player_id %></td>
+    <td><%= start_up_decision.simulation_id %></td>
+    <td><%= start_up_decision.taste_id %></td>
+    <td><%= start_up_decision.type_id %></td>
+    <td><%= start_up_decision.topping_id %></td>
+    <td><%= start_up_decision.packaging_id %></td>
+    <td><%= link_to 'Show', start_up_decision %></td>
+    <td><%= link_to 'Edit', edit_start_up_decision_path(start_up_decision) %></td>
+    <td><%= link_to 'Destroy', start_up_decision, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Start up decision', new_start_up_decision_path %>

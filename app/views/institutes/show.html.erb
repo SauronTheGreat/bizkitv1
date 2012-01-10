@@ -1,0 +1,15 @@
+<%= content_for :page_header do %>
+    <h1>Showing Details of <%= @institute.name %></h1>
+
+<% end %>
+
+<p id="notice"><%= notice %></p>
+
+<p>
+  <b>Name:</b>
+  <%= @institute.name %>
+</p>
+
+
+<%= link_to 'Edit', edit_institute_path(@institute) %> |
+<%= link_to 'Back', institutes_path %>

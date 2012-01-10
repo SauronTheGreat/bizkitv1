@@ -1,0 +1,25 @@
+<h1>Listing simulations</h1>
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Max rounds</th>
+    <th></th>
+    <th></th>
+    <th></th>
+  </tr>
+
+<% @simulations.each do |simulation| %>
+  <tr>
+    <td><%= simulation.name %></td>
+    <td><%= simulation.max_rounds %></td>
+    <td><%= link_to 'Show', simulation %></td>
+    <td><%= link_to 'Edit', edit_simulation_path(simulation) %></td>
+    <td><%= link_to 'Destroy', simulation, confirm: 'Are you sure?', method: :delete %></td>
+  </tr>
+<% end %>
+</table>
+
+<br />
+
+<%= link_to 'New Simulation', new_simulation_path %>

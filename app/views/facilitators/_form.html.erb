@@ -1,0 +1,32 @@
+<%= form_for(@facilitator) do |f| %>
+  <% if @facilitator.errors.any? %>
+    <div id="error_explanation">
+      <h2><%= pluralize(@facilitator.errors.count, "error") %> prohibited this facilitator from being saved:</h2>
+
+      <ul>
+      <% @facilitator.errors.full_messages.each do |msg| %>
+        <li><%= msg %></li>
+      <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="clearfix">
+    <%= f.label :user_id %><br />
+    <div class="input">
+    <%= f.select :user_id,@users %>
+      </div>
+  </div>
+
+  <div class="clearfix">
+    <%= label_tag :institute_id %><br />
+    <div class="input">
+    <%= select_tag :institute_id,options_for_select(@institutes) %>
+      </div>
+  </div>
+
+
+  <div class="row pull-right">
+    <%= f.submit "Submit",:class=>"primary btn" %>
+  </div>
+<% end %>

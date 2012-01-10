@@ -1,0 +1,219 @@
+<script>
+    $(function () {
+
+
+        $('.debt_funding').selectToUISlider();
+        $('.prices').selectToUISlider();
+
+        $('#tabs').tabs({selected:0});
+
+    })
+</script>
+
+<style type="text/css">
+
+    .ui-slider {
+        margin-top: 30px;
+    }
+</style>
+
+<%= content_for :page_header do %>
+    Round Decisions
+<% end %>
+
+<%= form_tag :action => 'create' %>
+<div id="tabs">
+  <ul>
+    <li><a href="#debt_funding">Debt Funding</a></li>
+    <li><a href="#markets">Markets</a></li>
+    <li><a href="#factories">Factories</a></li>
+    <li><a href="#price">Prices</a></li>
+    <li><a href="#employee_incentives">Employee Incentives</a></li>
+    <li><a href="#channel_incentives">Channel Incentives</a></li>
+    <li><a href="#media_incentives">Media Incentives</a></li>
+
+  </ul>
+
+
+  <!--start of debt funding section-->
+
+  <div id="debt_funding">
+
+
+    <%= fields_for @round_debt_funding do |f| %>
+        <%= f.hidden_field :player_id, :value=>@player_id %>
+        <%= f.hidden_field :round_id, :value=>@round_id %>
+        <div class="clearfix">
+          <%= f.label :borrowing_value %>
+          <div class="input">
+            <%= f.select :borrowing_value, 1..(@net_worth*0.1), {}, :class=>"debt_funding" %>
+          </div>
+        </div>
+
+
+    <% end %>
+
+  </div>
+
+  <!--end of debt funding section-->
+
+  <!--start of market section-->
+  <div id="markets">
+
+    <%= fields_for @round_market do |f| %>
+        <%= f.hidden_field :player_id, :value=>@player_id %>
+        <%= f.hidden_field :round_id, :value=>@round_id %>
+        <div class="clearfix">
+          <%= f.label :market_id %>
+          <div class="input">
+            <%= f.select :market_id, Market.all.collect { |market| [market.name, market.id] }, {}, :class=>"markets", :multiple=>true %>
+          </div>
+        </div>
+
+
+    <% end %>
+
+
+  </div>
+
+  <!--end of market section-->
+  <div id="factories">
+
+
+    <% @round_factories.each_with_index do |round_factory, index| %>
+        <%= fields_for "round_factories[#{index}", round_factory do |f| %>
+            <%= f.hidden_field :player_id, :value=>@player_id %>
+            <%= f.hidden_field :round_id, :value=>@round_id %>
+            <div class="clearfix">
+              <%= f.label "#{@sizes[index].name}" %>
+              <div class="input">
+                <%= f.check_box :size_id, {:checked=>false, :class=>"#{@sizes[index].name}"}, @sizes[index].id %>
+              </div>
+            </div>
+            <%= f.select :quantity, 1..3, {}, :id=>"#{@sizes[index].name}" %>
+        <% end %>
+    <% end %>
+
+
+  </div>
+
+  <!--start of prices-->
+  <div id="price">
+
+    <%= fields_for @round_price do |f| %>
+        <%= f.hidden_field :player_id, :value=>@player_id %>
+        <%= f.hidden_field :round_id, :value=>@round_id %>
+        <div class="clearfix">
+          <%= f.label :price %>
+          <div class="input">
+            <%= f.select :price, 3..100, {}, :class=>"prices" %>
+          </div>
+        </div>
+    <% end %>
+
+  </div>
+  <!--end of prices-->
+
+  <!--start of employee incentives-->
+  <div id="employee_incentives">
+
+    <%= fields_for @round_employee_incentive do |f| %>
+        <%= f.hidden_field :player_id, :value=>@player_id %>
+        <%= f.hidden_field :round_id, :value=>@round_id %>
+        <div class="clearfix">
+          <%= f.label :employee_incentive_id %>
+          <div class="input">
+            <%= f.select :employee_incentive_id, EmployeeIncentive.all.collect { |employee_incentive| [employee_incentive.name, employee_incentive.id] }, {}, :class=>"employee_incentive", :multiple=>true %>
+          </div>
+        </div>
+
+
+    <% end %>
+
+
+  </div>
+  <!--end of employee incentives-->
+
+  <!--start of channel incentives-->
+
+  <div id="channel_incentives">
+
+    <%= fields_for @round_channel_incentive do |f| %>
+        <%= f.hidden_field :player_id, :value=>@player_id %>
+        <%= f.hidden_field :round_id, :value=>@round_id %>
+        <div class="clearfix">
+          <%= f.label :channel_incentive_id %>
+          <div class="input">
+            <%= f.select :channel_incentive_id, ChannelIncentive.all.collect { |channel_incentive| [channel_incentive.name, channel_incentive.id] }, {}, :class=>"channel_incentive", :multiple=>true %>
+          </div>
+        </div>
+
+
+    <% end %>
+
+
+  </div>
+
+  <!--end of channel incentives-->
+
+
+  <!--start of media incentives-->
+  <div id="media_incentives">
+     <% @round_advertisements.each_with_index do |round_advertisement, index| %>
+        <%= fields_for "@round_advertisements[#{index}", round_advertisement do |f| %>
+            <%= f.hidden_field :player_id, :value=>@player_id %>
+            <%= f.hidden_field :round_id, :value=>@round_id %>
+            <div class="clearfix">
+              <%= f.label "#{@ads[index].name}" %>
+              <div class="input">
+                <%= f.check_box :advertising_id, {:checked=>false, :class=>"#{@ads[index].name}"}, @ads[index].id %>
+              </div>
+            </div>
+            <%= f.select :size_id, Size.all.collect{|size|[size.name,size.id]}, {}, :id=>"#{@ads[index].name}" %>
+        <% end %>
+    <% end %>
+
+
+  </div>
+
+
+
+  <%= submit_tag %>
+
+</div>
+
+<script type="text/javascript">
+    $(function() {
+        <% Size.all.each do |size| %>
+
+
+        $("#<%= size.name %>").hide();
+
+
+        <% end %>
+
+        <% Advertising.all.each do |advertising|  %>
+           $("#<%= advertising.name %>").hide();
+
+        <% end %>
+
+        $(":checkbox").click(function() {
+
+
+            if ($(this).is(":checked")) {
+                $("#" + $(this).attr("class")).show();
+                $("#" + $(this).attr("class")).selectToUISlider();
+            }
+            else {
+                $("#" + $(this).attr("class")).hide();
+                $("#" + $(this).attr("class")).next().hide();
+            }
+
+
+        });
+
+
+    });
+
+
+</script>

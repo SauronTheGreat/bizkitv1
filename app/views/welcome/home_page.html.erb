@@ -1,0 +1,376 @@
+<script type="text/javascript">
+    $(function () {
+
+        //  $(".market").hide();
+        $(".consumer").hide();
+        $(".raw_material").hide();
+        $(".channel").hide();
+
+
+        $("a[rel=popover]")
+                .popover({
+                    offset: 10
+                })
+                .click(function(e) {
+                    e.preventDefault();
+                    $(".market").hide();
+            $(".consumer").hide();
+            $(".raw_material").hide();
+            $(".channel").hide();
+
+
+
+            var target_div = $(this).attr("id");
+            $("." + target_div).show();
+
+
+                })
+    })
+</script>
+<script language="JavaScript">
+    TargetDate = "12/31/2020 5:00 AM";
+    BackColor = "palegreen";
+    ForeColor = "navy";
+    CountActive = true;
+    CountStepper = -1;
+    LeadingZero = true;
+    DisplayFormat = "%%H%% : %%M%% : %%S%%";
+    FinishMessage = "It is finally here!";
+</script>
+<%= javascript_include_tag "#{Rails.root}/app/assets/javascripts/countdown.js " %>
+
+
+
+
+
+
+
+<script type="text/javascript" src="https://www.google.com/jsapi"></script>
+<script type="text/javascript">
+    google.load("visualization", "1", {packages:["corechart"]});
+
+
+    function drawChart(data, div_name, title) {
+
+        //  var tab_div_name = div_name.replace("-", '');
+        var tab_div_name = div_name;
+
+
+        var chart = new google.visualization.ColumnChart(document.getElementById(div_name));
+        chart.draw(data, {width: 460, height: 240, title: title,
+            hAxis: {title: 'Market', titleTextStyle: {color: 'red'}},
+            vAxis: {title: 'Amount', titleTextStyle: {color: 'red'}}
+
+        });
+    }
+
+
+    //this is for pie chart
+    function drawPieChart(data, div_name, title) {
+
+
+        var chart = new google.visualization.PieChart(document.getElementById(div_name));
+        chart.draw(data, {width: 460, height: 240, title: title});
+    }
+
+
+    $(function() {
+
+        //market data population
+
+        var market_population_data = new google.visualization.DataTable();
+        var market_dealer_data = new google.visualization.DataTable();
+        var market_vendor_data = new google.visualization.DataTable();
+        market_population_data.addColumn('string', 'Market');
+        market_dealer_data.addColumn('string', 'Market');
+        market_vendor_data.addColumn('string', 'Market');
+        market_population_data.addColumn('number', 'Amount');
+        market_dealer_data.addColumn('number', 'Amount');
+        market_vendor_data.addColumn('number', 'Amount');
+
+
+        var number_of_rows = parseInt("<%= Market.all.count %>");
+
+        market_population_data.addRows(number_of_rows);
+        market_vendor_data.addRows(number_of_rows);
+        market_dealer_data.addRows(number_of_rows);
+
+        <% Market.all.each_with_index do |market,index| %>
+
+        market_population_data.setValue(parseInt("<%= index %>"), 0, "<%=market.name %>");
+        market_population_data.setValue(parseInt("<%= index %>"), 1, parseInt("<%= market.no_of_consumers %>"));
+
+        market_dealer_data.setValue(parseInt("<%= index %>"), 0, "<%= market.name %>");
+        market_dealer_data.setValue(parseInt("<%= index %>"), 1, parseInt("<%= market.catchment_of_dealers %>"));
+
+        market_vendor_data.setValue(parseInt("<%= index %>"), 0, "<%=market.name %>");
+        market_vendor_data.setValue(parseInt("<%= index %>"), 1, parseInt("<%= market.catchment_of_vendors %>"));
+
+
+        <% end %>
+        drawChart(market_dealer_data, "dealer", "Dealer");
+
+
+        //consumer category data
+
+        var consumer_category_data = new google.visualization.DataTable();
+        consumer_category_data.addColumn('string', 'Category');
+        consumer_category_data.addColumn('number', 'Consumers per Category');
+        var number_of_rows = parseInt("<%= ConsumerCategory.all.count %>");
+        consumer_category_data.addRows(number_of_rows);
+        <% ConsumerCategory.all.each_with_index do |consumer_category,index| %>
+        consumer_category_data.setValue(parseInt("<%=index %>"), 0, "<%= consumer_category.name %>");
+        consumer_category_data.setValue(parseInt("<%=index %>"), 1, parseInt("<%= consumer_category.consumers.count %>"));
+
+
+        <% end %>
+        drawPieChart(consumer_category_data, "category", "CategoryData");
+
+
+        //channel data
+
+        <% @expense_channel_type=ExpenseType.find_by_name("Channel") %>
+        <% @expenses=@expense_channel_type.expenses %>
+        var expenses = new Array();
+        var last_index = parseInt("<%=@expenses.last.id%>");
+        for (var i = 0; i <= last_index; i++) {
+            expenses[i] = 0;
+        }
+
+        <% Dealer.all.each do |dealer| %>
+
+        <% @dealer_preference=dealer.dealer_preferences.sort_by(&:index).last%>
+        expenses[parseInt(<%=@dealer_preference.expense_id %>)] = expenses[parseInt(<%=@dealer_preference.expense_id %>)] + 1;
+        <% end %>
+        var total = 0;
+
+        var i = 0;
+        for (i = 0; i < expenses.length; i++) {
+            if ((expenses[i] > 0)) {
+                total = total + parseInt(expenses[i]);
+
+            }
+
+        }
+
+
+        var channel_characteristics = new google.visualization.DataTable();
+        channel_characteristics.addColumn('string', 'Expense');
+        channel_characteristics.addColumn('number', 'Expense per Category');
+        var number_of_rows = parseInt("<%= @expenses.count %>");
+        channel_characteristics.addRows(number_of_rows);
+
+
+        <% @expenses.each_with_index do |expense,index| %>
+
+
+        channel_characteristics.setValue(parseInt("<%=index %>"), 0, "<%= expense.name %>");
+        channel_characteristics.setValue(parseInt("<%=index %>"), 1, expenses[parseInt("<%= expense.id%>")] / total * 100);
+
+
+        <% end %>
+
+
+        drawPieChart(channel_characteristics, "channels", "CategoryData");
+
+
+        $("a").click(function() {
+
+            var target_div_name = $(this).attr("href").replace("#", "");
+            var target_data_name = $($(this).parent().parent().parent()).attr("class") + "_" + target_div_name + "_data";
+
+            drawChart(eval(target_data_name), target_div_name, target_div_name);
+
+        });
+
+
+    });
+</script>
+
+<script type="text/javascript">
+
+    $(function() {
+
+
+
+
+        $(".btn").click(function() {
+
+            $(".market").hide();
+            $(".consumer").hide();
+            $(".raw_material").hide();
+            $(".channel").hide();
+
+
+            alert($(this).attr("id"));
+            var target_div = $(this).attr("id");
+            $("." + target_div).show();
+
+
+        });
+
+    });
+
+
+</script>
+
+
+
+
+
+
+
+
+
+<!--Round Box0-->
+<div class="row">
+  <div class="span2">
+    <div id="round_box" class="row show-grid" style="margin: auto;height:100px;background-color:#ff4500;">
+      <h2 align="center" style="color: #ffffff;margin-top:15px">Round</h2>
+      <% if ActiveRound.all.count >0 %>
+          <h2 align="center" style="color: #ffffff;"><%= Round.find(ActiveRound.first.round_id).id %></h2>
+      <% else %>
+          <h2 align="center" style="color: #ffffff;"><%= 0 %></h2>
+      <% end %>
+    </div>
+    <br/>
+
+    <div id="round_box1" class="row show-grid label warning" style="margin: auto;height: 100px;">
+      <h2 style="color: #ffffff;" id="cntdwn"></h2>
+      <h4 align="center" style="color: #ffffff;">Hrs Left </h4> <br/>
+    </div>
+    <br/>
+  </div>
+
+  <div class="span3">
+    <!--market Box-->
+    <div class="row show-grid">
+      <a href="#" class="btn info span3" id="market" rel="popover" title="A title" data-content="And here's some amazing content. It's very engaging. right?">Market</a>
+
+    </div>
+    <!--consumer BOX-->
+    <div class="row show-grid" style="margin-top: 10px;">
+      <a href="#" class="btn info span3" id="consumer" rel="popover" title="A title" data-content="And here's some amazing content. It's very engaging. right?">Consumers</a>
+    </div>
+
+    <!--&lt;!&ndash;PAT bOX&ndash;&gt;-->
+    <!--<div class="row show-grid" style="margin-top: 10px;">-->
+    <!--<a href="#" class="btn info span3" rel="popover" title="A title" data-content="And here's some amazing content. It's very engaging. right?">Economic-->
+    <!--Parameters</a>-->
+    <!--</div>-->
+
+    <!--raw materials BOX-->
+    <div class="row show-grid" style="margin-top: 10px">
+      <a href="#" class="btn info span3" id="raw_material" rel="popover" title="A title" data-content="And here's some amazing content. It's very engaging. right?">Raw
+        Materials</a>
+    </div>
+
+    <!--LOAN BOX-->
+    <div class="row show-grid" style="margin-top: 10px">
+      <a href="#" class="btn info span3" id="channel" rel="popover" title="A title" data-content="And here's some amazing content. It's very engaging. right?">Channel</a>
+    </div>
+
+
+  </div>
+
+  <!--TABS -->
+  <div class="span7 offset1">
+
+    <div class="market">
+      <ul class="tabs">
+        <li class="active"><a href="#dealer">Dealers</a></li>
+        <li><a href="#vendor">Vendors</a></li>
+        <li><a href="#population">Population</a></li>
+
+      </ul>
+      <div class="tab-content">
+        <div id="dealer" class="tab-pane active">
+        </div>
+
+        <div id="vendor" class="tab-pane">
+        </div>
+
+        <div id="population" class="tab-pane">
+        </div>
+
+
+      </div>
+
+    </div>
+
+    <div class="consumer">
+
+      <ul class="tabs">
+        <li class="active"><a href="#category">Consumer Categories</a></li>
+
+
+      </ul>
+      <div class="tab-content">
+        <div id="category" class="tab-pane active">
+
+        </div>
+      </div>
+
+
+    </div>
+
+
+    <div class="raw_material">
+
+      <ul class="tabs">
+        <li class="active"><a href="#raw_materials">Raw Materials</a></li>
+
+
+      </ul>
+      <div class="tab-content">
+        <div id="raw_materials" class="tab-pane active">
+          <table align="center" >
+            <tr>
+              <th>Raw Material</th>
+              <th></th>
+              <th>Prices Per Kg</th>
+            </tr>
+            <% @raw_material = RawMaterial.all %>
+            <% @raw_material.each do |raw_material| %>
+                <tr>
+                  <td> <%= raw_material.name %></td>
+                  <td>|</td>
+                  <td style="text-align: right;"><%= raw_material.price_per_kg %></td>
+                </tr>
+            <% end %>
+          </table>
+
+        </div>
+      </div>
+
+
+    </div>
+
+
+    <div class="channel">
+
+      <ul class="tabs">
+        <li class="active"><a href="#channels">Channel Characteristics</a></li>
+
+
+      </ul>
+      <div class="tab-content">
+        <div id="channels" class="tab-pane active">
+
+
+        </div>
+      </div>
+
+
+    </div>
+
+
+  </div>
+
+</div>
+
+<script>
+    $(function () {
+        $('.tabs').tabs()
+    })
+</script>

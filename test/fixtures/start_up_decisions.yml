@@ -1,0 +1,17 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/Fixtures.html
+
+one:
+  player_id: 1
+  simulation_id: 1
+  taste_id: 1
+  type_id: 1
+  topping_id: 1
+  packaging_id: 1
+
+two:
+  player_id: 1
+  simulation_id: 1
+  taste_id: 1
+  type_id: 1
+  topping_id: 1
+  packaging_id: 1
